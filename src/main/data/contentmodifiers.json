@@ -204,6 +204,7 @@
           "url": "https://www.isdcf.com/site/registry-cpl-extensions/"
         }
       ],
+      "element": "ExtensionMetadata",
       "extName": "Dolby EDR",
       "extScope": "http://www.dolby.com/schemas/2014/EDR-metadata",
       "extpropName": "image transfer function",
@@ -214,6 +215,25 @@
     "dcncCode": "DVis",
     "dcncSortOrder": 12,
     "description": "Dolby Vision graded image."
+  },
+  {
+    "cplMetadata": {
+      "definingDocs": [
+        {
+          "name": "ISDCF CPL Metadata Extensions",
+          "url": "https://https://www.isdcf.com/site/registry-cpl-extensions/"
+        }
+      ],
+      "element": "ExtensionMetadata",
+      "extName": "Dolby Laboratories, Inc.",
+      "extScope": "http://www.dolby.com/schemas/st0429-16/2024",
+      "extpropName": "AtmosVersion",
+      "extpropValue": "1.0.0",
+      "metaType": "Extension Present"
+    },
+    "dcncCode": "DAtm",
+    "dcncSortOrder": 13,
+    "description": "Dolby Atmos IAB context."
   },
   {
     "cplMetadata": {
@@ -231,7 +251,7 @@
       "metaType": "Extension Present"
     },
     "dcncCode": "HDR1",
-    "dcncSortOrder": 13,
+    "dcncSortOrder": 14,
     "description": "DCI HDR graded image."
   },
   {
@@ -241,7 +261,7 @@
       "metaType": "None"
     },
     "dcncCode": "EC",
-    "dcncSortOrder": 14,
+    "dcncSortOrder": 15,
     "description": "Eclaircolor graded image."
   }
 ]
