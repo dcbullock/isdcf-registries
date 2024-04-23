@@ -22,26 +22,57 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 const { areBadURLs, isSkipURLCheck } = require('./url-checker.js')
 
 module.exports = async (registry, name) => {
-  /* is the registry sorted */
+
+  /* is any key in the registry duplicated */
+
   for (let i = 1; i < registry.length; i++) {
-    if (registry[i-1].code >= registry[i].code) {
-      throw name + " registry key " + registry[i-1].code + " is " +
-        ((registry[i-1].code === registry[i].code) ? "duplicated" : "not sorted");
+    if (registry[i].termContext !== undefined) {
+      registry[i].term = (registry[i].term + " (" + registry[i].termContext + ")")
     }
 
-    /* ensure all obsoletedBy codes are found */
-    (registry[i].obsoletedBy||[]).forEach(obs => {
-      if (!registry.find(r => r.code === obs))
-        throw `${name}: ${registry[i].description} is obsoletedBy '${obs}' which is an invalid code`
-    })
+    if (registry[i-1].term >= registry[i].term) {
+      throw name + " registry key " + registry[i-1].term + " is " +
+        ((registry[i-1].term === registry[i].term) ? "duplicated" : "not sorted");
+    }
+  }
+
+   /* are related terms defined in registry */
+
+  const definedTerms = []
+  for (let t in registry) {
+    definedTerms.push(registry[t].term)
+  }
+
+  for (let r in registry) {
+    let relatedTerm = registry[r].relatedTerms
+
+    for (let rT in relatedTerm) {
+      if (!definedTerms.includes(relatedTerm[rT])) {
+        throw `${name} registry '${registry[r].term}' contains relatedTerm '${relatedTerm[rT]}' that is not a defined term`;
+      }
+    }
   }
 
   /* any bad URLs?*/
 
   if (! isSkipURLCheck()) {
-    const urls = registry.filter((e) => "url" in e).map((e) => e.url);
+    const urls = []
+    for (let e in registry) {
+      let sources = registry[e].sources
+      for (let s in sources) {
+        urls.push(sources[s])
+      }
+      let media = registry[e].media
+      for (let m in media) {
+        let ms = media[m]
+        for (let s in ms) {
+          urls.push(ms[s])
+        }    
+      }
+    }
     const badURLs = await areBadURLs(urls);
     if (badURLs.length > 0)
       throw `${name}: Malicious URLs at ${badURLs.join(', ')}.`;
   }
+  
 }
